@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: coldchain_rl_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PROJECT_NAME=ColdChain-RL
+      - SECRET_KEY=coldchain_secret_ci_key_2026_super_secure_academic_grade
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+      - DATABASE_URL=sqlite:///./coldchain.db
+      - ENVIRONMENT=production
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: coldchain_rl_frontend
+    ports:
+      - "5180:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
